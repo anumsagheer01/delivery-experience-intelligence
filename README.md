@@ -6,9 +6,11 @@
 ![Tests](https://img.shields.io/badge/Tests-31_passing-brightgreen)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
-**An end-to-end data science platform that watches deliveries like: spot trouble early, check the photo evidence, and decide what to do next, before the customer has to complain.**
+**An end-to-end data science platform that spots trouble early, checks the photo evidence, and decides what to do next, before the customer has to complain.**
 
-## The problem, in plain English
+[Also available as a presentation!](https://docs.google.com/presentation/d/1dMVPmu7jhGnf5r54qxO6Emqcw6QEn9v4e-NpkpGVsvw/edit?usp=sharing)
+
+## The problem
 
 Every late or damaged delivery costs a company twice. First the redelivery, then the customer's trust. Most delivery companies only find out something went wrong when the bad review arrives. 
 
