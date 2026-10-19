@@ -16,9 +16,15 @@
 
 ---
 
-The problem: Delivery delays and failed deliveries can increase operational costs and affect customer satisfaction. But by the time a customer reports an issue or leaves a poor review, the problem has already happened.
+The Problem
 
-I built this project to explore how logistics companies could identify delivery problems earlier, rather than waiting for a late shipment or a poor review. It brings together historical order data, machine learning, computer vision, event streaming, and an AI-assisted decision workflow on Google Cloud.
+Delivery issues aren't always identified early enough to act on them. A delayed shipment, missing package, or poor delivery experience can affect customer satisfaction, especially when the problem is only noticed after a customer reports it.
+
+Why I Built This
+
+I built this project to explore how logistics companies could identify delivery problems earlier and make better decisions about when to intervene. It brings together historical order data, machine learning, computer vision, event streaming, and an AI-assisted decision workflow on Google Cloud.
+
+The system was built and evaluated with public datasets and historical replays, not live customer deliveries. The different datasets are independent and are not joined into fictional order records.
 
 The system was **built and evaluated with public datasets and historical replays**, not live customer deliveries. The different datasets are independent and are not joined into fictional order records.
 
