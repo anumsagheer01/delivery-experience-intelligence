@@ -10,13 +10,13 @@
 ![Vertex AI](https://img.shields.io/badge/Vertex_AI-Computer_Vision-8E44AD?style=for-the-badge)
 ![Tests](https://img.shields.io/badge/Tests-31_Passing-2E7D32?style=for-the-badge)
 
-**[View the project presentation](https://docs.google.com/presentation/d/1dMVPmu7jhGnf5r54qxO6Emqcw6QEn9v4e-NpkpGVsvw/edit?usp=sharing)**
+**[View the project presentation!](https://docs.google.com/presentation/d/1dMVPmu7jhGnf5r54qxO6Emqcw6QEn9v4e-NpkpGVsvw/edit?usp=sharing)**
 
 </div>
 
 ---
 
-## At a glance
+The problem: Delivery delays and failed deliveries can increase operational costs and affect customer satisfaction. But by the time a customer reports an issue or leaves a poor review, the problem has already happened.
 
 I built this project to explore how logistics companies could identify delivery problems earlier, rather than waiting for a late shipment or a poor review. It brings together historical order data, machine learning, computer vision, event streaming, and an AI-assisted decision workflow on Google Cloud.
 
@@ -369,8 +369,5 @@ Raw datasets are not committed to this repository. Download scripts and manifest
 
 <div align="center">
 
-**Built with Python, SQL, Google Cloud, Vertex AI, and Gemini.**
-
-**[See the 9-slide project showcase](https://docs.google.com/presentation/d/1dMVPmu7jhGnf5r54qxO6Emqcw6QEn9v4e-NpkpGVsvw/edit?usp=sharing)**
 
 </div>
