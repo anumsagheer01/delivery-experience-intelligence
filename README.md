@@ -303,4 +303,3 @@ Raw datasets are never committed. Everything downloads from official public sour
 
 ---
 
-*Built end to end: real data, real cloud, real measurements. Every claim above traces to a script in this repo or a resource in GCP project `delivery-experience-511901`.*
