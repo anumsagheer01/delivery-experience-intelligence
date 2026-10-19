@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "delivery-experience-intelligence"
+version = "1.0.0"
+description = "End-to-end delivery experience intelligence platform on GCP with applied ML and agentic AI"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

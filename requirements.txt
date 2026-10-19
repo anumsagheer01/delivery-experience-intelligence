@@ -1,0 +1,32 @@
+# Core runtime
+pandas>=2.0
+numpy>=1.26
+pyarrow>=14.0
+scikit-learn>=1.3
+scipy>=1.11
+duckdb>=0.9
+requests>=2.31
+
+# Vision
+opencv-python-headless>=4.8
+pillow>=10.0
+
+# Streaming / cloud (install when deploying to GCP)
+google-cloud-pubsub>=2.18
+google-cloud-bigquery>=3.13
+google-cloud-storage>=2.10
+google-cloud-aiplatform>=1.38
+google-cloud-vision>=3.4
+
+# API
+fastapi>=0.104
+uvicorn>=0.24
+
+# App / labeling
+streamlit>=1.30
+
+# Tests
+pytest>=7.4
+
+# PDF study guide rendering (build-time only)
+fpdf2>=2.7
