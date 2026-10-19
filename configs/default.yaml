@@ -1,0 +1,23 @@
+project: delivery-experience-511901
+region: us-central1
+bigquery:
+  dataset: delivery
+  location: US
+  maximum_bytes_billed: 1099511627776  # 1 TiB guardrail per query
+pubsub:
+  topic: order-events
+  bigquery_subscription: order-events-bq
+  agent_subscription: order-events-agent
+storage:
+  raw_bucket: delivery-experience-511901-raw
+models:
+  risk:
+    train_cutoff: "2018-01-01"
+    model_type: boosted_tree
+  vision:
+    eval_sample: 300
+    gemini_model: gemini-2.0-flash
+agent:
+  dry_run_default: true
+  confidence_escalation_threshold: 0.6   # provisional; must be validated (see docs/decisions)
+  max_tool_rounds: 4
