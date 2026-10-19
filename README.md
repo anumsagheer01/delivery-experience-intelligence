@@ -6,13 +6,13 @@
 ![Tests](https://img.shields.io/badge/Tests-31_passing-brightgreen)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
-**An end-to-end data science platform that watches deliveries the way a good operations manager would: spot trouble early, check the photo evidence, and decide what to do next, before the customer has to complain.**
+**An end-to-end data science platform that watches deliveries like: spot trouble early, check the photo evidence, and decide what to do next, before the customer has to complain.**
 
 ## The problem, in plain English
 
-Every late or damaged delivery costs a company twice. First the redelivery, then the customer's trust. Most delivery companies only find out something went wrong when the bad review arrives. By then it is too late to fix anything.
+Every late or damaged delivery costs a company twice. First the redelivery, then the customer's trust. Most delivery companies only find out something went wrong when the bad review arrives. 
 
-This platform flips that around. It looks at real order data, predicts which deliveries are heading for trouble, checks the proof-of-delivery photo with computer vision, and drafts the right intervention, all before the customer experience falls apart. Everything runs on Google Cloud, everything was measured on real data, and every number in this README traces back to a script you can run.
+This platform looks at real order data, predicts which deliveries are heading for trouble, checks the proof-of-delivery photo with computer vision, and drafts the right intervention, all before the customer experience falls apart. Everything runs on Google Cloud.
 
 ## How the pieces fit together
 
