@@ -26,8 +26,6 @@ I built this project to explore how logistics companies could identify delivery 
 
 The system was built and evaluated with public datasets and historical replays, not live customer deliveries. The different datasets are independent and are not joined into fictional order records.
 
-The system was **built and evaluated with public datasets and historical replays**, not live customer deliveries. The different datasets are independent and are not joined into fictional order records.
-
 | Orders analyzed | Streaming benchmark | Vision test accuracy | Agent decisions checked |
 |:---:|:---:|:---:|:---:|
 | **99,441** | **6,235 events/sec** | **99.6%** | **500/500** |
