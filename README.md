@@ -10,7 +10,7 @@
 ![Vertex AI](https://img.shields.io/badge/Vertex_AI-Computer_Vision-8E44AD?style=for-the-badge)
 ![Tests](https://img.shields.io/badge/Tests-31_Passing-2E7D32?style=for-the-badge)
 
-**[View the project presentation!](https://docs.google.com/presentation/d/1dMVPmu7jhGnf5r54qxO6Emqcw6QEn9v4e-NpkpGVsvw/edit?usp=sharing)**
+**[View project presentation](https://docs.google.com/presentation/d/1dMVPmu7jhGnf5r54qxO6Emqcw6QEn9v4e-NpkpGVsvw/edit?usp=sharing)**
 
 </div>
 
@@ -18,13 +18,13 @@
 
 ## TL;DR
 
-This project replays delivery data on Google Cloud to test whether problems can be flagged before a customer complains. It uses public datasets and historical replays only, not live deliveries, and datasets are kept separate.
+I built this project to explore how machine learning, computer vision, and AI could help identify delivery problems early and support better decisions. It uses public datasets and historical replays only, not live deliveries, and datasets are kept separate.
 
-- Risk models: HistGradientBoosting in scikit-learn and boosted trees in BigQuery ML predict late delivery and low-review risk from purchase-time features on 99,441 Olist orders, using temporal splits. Late delivery ROC-AUC was 0.649 locally and 0.616 in BigQuery ML; low-review ROC-AUC was 0.601 locally and 0.575 in BigQuery ML.
+- Risk models: Trained HistGradientBoosting and BigQuery ML boosted-tree models on 99,441 Olist orders to predict late deliveries and low customer reviews using purchase-time features and temporal splits. The local models achieved ROC-AUC scores of 0.649 for late deliveries and 0.601 for low reviews.
 - Computer vision: a Vertex AI AutoML classifier distinguishes package_present from door_no_package. It was trained on 4,712 Open Images photos, not actual proof-of-delivery photographs. On 471 held-out images, accuracy was 99.58 percent, with package precision 1.000, recall 0.991, and F1 scores of 0.9960 and 0.9955.
-- Agentic workflow: deterministic rules decide no action or a draft, logged to BigQuery. Gemini 2.5 Flash supports drafts and was evaluated as an image judge, with 64.6 percent agreement with weak labels on 113 images, not an accuracy score. Independent recomputation matched 500 of 500 decisions, 496 no action and 4 drafts, with nothing sent. This validates rules, not predictions.
+- Agentic workflow: deterministic rules decide no action or a draft, logged to BigQuery. Gemini 2.5 Flash supports drafts and was evaluated as an image judge, with 64.6 percent agreement with weak labels on 113 images, not an accuracy score. An independent check confirmed that all 500 agent decisions followed the predefined rules. Of these, 496 required no action and 4 generated outreach drafts. No messages were sent. This validates rules, not predictions.
 - Cloud engineering: a Pub/Sub replay published 19,770 Olist events at 6,235 events per second with no message loss, into a BigQuery warehouse. Local tests pass, with 31 tests.
-- Experimentation: the A/B test uses customer-level 50/50 assignment, power analysis, and O'Brien-Fleming monitoring. It was designed and replay-validated, never run live, no uplift is claimed.
+- Experimentation: Designed an A/B test to evaluate whether early delay notifications could improve customer experience, including sample size calculations and statistical monitoring. The experiment was simulated, not run with real customers, and no uplift is claimed.
 
 ## The Problem
 
