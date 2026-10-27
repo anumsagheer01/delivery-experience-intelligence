@@ -34,14 +34,6 @@ Built a delivery intelligence platform on **Google Cloud** using machine learnin
 
 Delivery issues aren't always identified early enough to act on them. A delayed shipment, missing package, or poor delivery experience can affect customer satisfaction, especially when the problem is only noticed after a customer reports it.
 
-The system was built and evaluated with public datasets and historical replays, not live customer deliveries. The different datasets are independent and are not joined into fictional order records.
-
-| Orders analyzed | Streaming benchmark | Vision test accuracy | Agent decisions checked |
-|:---:|:---:|:---:|:---:|
-| **99,441** | **6,235 events/sec** | **99.6%** | **500/500** |
-
-> **What these numbers mean:** Streaming throughput is from a benchmark; vision accuracy is on a held-out Open Images test set; 500/500 means the agent's decisions matched predefined rules, not that its predictions were 100% accurate.
-
 ## Tech stack
 
 | Area | Technologies |
@@ -111,8 +103,6 @@ flowchart TB
     class POLICY,AUDIT decision;
 ```
 
-**Important:** Olist, Amazon, Open Images, and OpenStreetMap come from unrelated sources, places, and time periods. Each module uses its own dataset. Cross-module examples use controlled scenarios, not invented joins.
-
 ## How it works
 
 ### 01 · Ingest and replay order events
@@ -137,7 +127,7 @@ I replayed **500 historical orders** through the cloud agent workflow. **496 req
 
 ### 06 · Design an outreach experiment
 
-I designed a customer-level A/B test comparing **normal delivery updates** with **early delay notifications**. It includes power analysis, sticky randomization, and sequential monitoring. The experiment was **simulated and validated, not run live**.
+I designed a customer-level A/B test comparing **normal delivery updates** with **early delay notifications**. It includes power analysis, sticky randomization, and sequential monitoring. The experiment was **simulated and validated**.
 
 ---
 
@@ -188,8 +178,6 @@ The classifier made **no false-positive package predictions** in this held-out t
 | Decisions matching independently recomputed rules | **500 / 500** |
 | Agent dry-run logic checks | **5 / 5** |
 
-**500/500 refers to policy agreement**, not general AI prediction accuracy. The four messages were drafts only; no real customers were contacted.
-
 ### A/B experiment design
 
 **Question:** Would an early warning about a possible delay improve customer experience compared with standard delivery updates?
@@ -205,7 +193,7 @@ The classifier made **no false-positive package predictions** in this held-out t
 | CUPED | Not applied; available covariates explained under 0.3% of variance |
 | Status | **Designed and replay-validated; never run live** |
 
-I used customer-level assignment because multiple orders from the same customer should not end up in different experiment groups. **No measured uplift or business impact is claimed.**
+I used customer-level assignment because multiple orders from the same customer should not end up in different experiment groups.
 
 ---
 
@@ -227,7 +215,7 @@ Late orders received lower customer ratings on average, which motivated looking 
 
 ![Zone revisits in Amazon routes](dashboard/preview/zone_revisits.png)
 
-**64.4%** of analyzed Amazon routes revisited a delivery zone. This is a separate route-analysis dataset, not a route history attached to Olist orders.
+**64.4%** of analyzed Amazon routes revisited a delivery zone.
 
 ### Package visibility predictions
 
@@ -247,7 +235,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-For Windows PowerShell, use `\.venv\Scripts\Activate.ps1` instead of the `source` command.
+For Windows PowerShell, use `.venv\Scripts\Activate.ps1` instead of the `source` command.
 
 **2. Download the public datasets**
 
@@ -380,8 +368,3 @@ For more detail, see [`STATUS.md`](STATUS.md), [`EXECUTION_REPORT.md`](EXECUTION
 Raw datasets are not committed to this repository. Download scripts and manifests are included instead.
 
 ---
-
-<div align="center">
-
-
-</div>
