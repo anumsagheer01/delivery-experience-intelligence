@@ -16,15 +16,19 @@
 
 ---
 
-## TL;DR
+## Project Overview & Key Results
 
-I built this project to explore how machine learning, computer vision, and AI could help identify delivery problems early and support better decisions. It uses public datasets and historical replays only, not live deliveries, and datasets are kept separate.
+Built a delivery intelligence platform on **Google Cloud** using machine learning, computer vision, and agentic AI to identify delivery risks, analyze package visibility, and support proactive customer outreach.
 
-- Risk models: Trained HistGradientBoosting and BigQuery ML boosted-tree models on 99,441 Olist orders to predict late deliveries and low customer reviews using purchase-time features and temporal splits. The local models achieved ROC-AUC scores of 0.649 for late deliveries and 0.601 for low reviews.
-- Computer vision: a Vertex AI AutoML classifier distinguishes package_present from door_no_package. It was trained on 4,712 Open Images photos, not actual proof-of-delivery photographs. On 471 held-out images, accuracy was 99.58 percent, with package precision 1.000, recall 0.991, and F1 scores of 0.9960 and 0.9955.
-- Agentic workflow: deterministic rules decide no action or a draft, logged to BigQuery. Gemini 2.5 Flash supports drafts and was evaluated as an image judge, with 64.6 percent agreement with weak labels on 113 images, not an accuracy score. An independent check confirmed that all 500 agent decisions followed the predefined rules. Of these, 496 required no action and 4 generated outreach drafts. No messages were sent. This validates rules, not predictions.
-- Cloud engineering: a Pub/Sub replay published 19,770 Olist events at 6,235 events per second with no message loss, into a BigQuery warehouse. Local tests pass, with 31 tests.
-- Experimentation: Designed an A/B test to evaluate whether early delay notifications could improve customer experience, including sample size calculations and statistical monitoring. The experiment was simulated, not run with real customers, and no uplift is claimed.
+| Area | Approach & Technologies | Key Results |
+|---|---|---|
+| **Delivery Risk Prediction** | HistGradientBoosting, BigQuery ML boosted trees, 99,441 Olist orders | **ROC-AUC: 0.649** for late deliveries and **0.601** for low reviews (local models) |
+| **Computer Vision** | Vertex AI AutoML, 4,712 Open Images photos | **99.58% accuracy** on 471 held-out images |
+| **Agentic AI** | Gemini 2.5 Flash, predefined decision rules, BigQuery audit logs | **500/500 decisions** matched independent rule checks; 4 outreach drafts created |
+| **Cloud Engineering** | Pub/Sub, BigQuery, historical event replay | **6,235 events/sec**, with no message loss in the benchmark |
+| **Experimentation** | A/B testing, power analysis, sequential monitoring | Designed and simulated an early-delay notification experiment; **no live results** |
+
+*This project uses public datasets and historical replays, not live deliveries. Computer vision was evaluated on general images rather than actual proof-of-delivery photos. Agent validation measures rule compliance, not prediction accuracy. No customer messages were sent, and no live A/B test was conducted.*
 
 ## The Problem
 
