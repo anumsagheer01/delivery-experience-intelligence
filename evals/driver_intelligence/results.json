@@ -1,0 +1,112 @@
+{
+  "synthetic": true,
+  "scenarios": 100,
+  "agent_decision_correctness": 1.0,
+  "baseline_decision_correctness": 0.24,
+  "instruction_retrieval_accuracy": 1.0,
+  "baseline_instruction_retrieval_accuracy": 1.0,
+  "conflict_resolution_accuracy": 1.0,
+  "baseline_conflict_resolution_accuracy": 0.5,
+  "restriction_detection_rate": 1.0,
+  "baseline_restriction_detection_rate": 0.0,
+  "unsafe_recommendation_rate": 0.0,
+  "unauthorized_access_prevention_rate": 1.0,
+  "baseline_unauthorized_access_prevention_rate": 0.0,
+  "feedback_update_correctness": 1.0,
+  "baseline_feedback_update_correctness": 0.0,
+  "card_latency_ms": {
+    "mean": 0.02,
+    "p50": 0.02,
+    "p95": 0.03
+  },
+  "end_to_end_latency_ms": {
+    "mean": 0.31,
+    "p50": 0.32,
+    "p95": 0.72
+  },
+  "llm_calls_per_event_stub": 0.0238,
+  "real_llm_calls": 0,
+  "llm_note": "Stub/fallback mode only. No real Gemini calls were made.",
+  "per_category": {
+    "correct_retrieval": {
+      "total": 10,
+      "agent_passed": 10,
+      "baseline_passed": 10
+    },
+    "precedence": {
+      "total": 10,
+      "agent_passed": 10,
+      "baseline_passed": 0
+    },
+    "conflicts": {
+      "total": 10,
+      "agent_passed": 10,
+      "baseline_passed": 10
+    },
+    "missing_info": {
+      "total": 8,
+      "agent_passed": 8,
+      "baseline_passed": 0
+    },
+    "stale_info": {
+      "total": 8,
+      "agent_passed": 8,
+      "baseline_passed": 0
+    },
+    "restrictions": {
+      "total": 8,
+      "agent_passed": 8,
+      "baseline_passed": 0
+    },
+    "gate_code_feedback": {
+      "total": 8,
+      "agent_passed": 8,
+      "baseline_passed": 0
+    },
+    "unauthorized_access": {
+      "total": 8,
+      "agent_passed": 8,
+      "baseline_passed": 0
+    },
+    "duplicate_events": {
+      "total": 6,
+      "agent_passed": 6,
+      "baseline_passed": 0
+    },
+    "missing_stop_memory": {
+      "total": 4,
+      "agent_passed": 4,
+      "baseline_passed": 0
+    },
+    "invalid_events": {
+      "total": 4,
+      "agent_passed": 4,
+      "baseline_passed": 0
+    },
+    "llm_fallback": {
+      "total": 4,
+      "agent_passed": 4,
+      "baseline_passed": 0
+    },
+    "feedback_processing": {
+      "total": 4,
+      "agent_passed": 4,
+      "baseline_passed": 0
+    },
+    "memory_update": {
+      "total": 4,
+      "agent_passed": 4,
+      "baseline_passed": 0
+    },
+    "prompt_injection": {
+      "total": 2,
+      "agent_passed": 2,
+      "baseline_passed": 2
+    },
+    "sensitive_exposure": {
+      "total": 2,
+      "agent_passed": 2,
+      "baseline_passed": 2
+    }
+  }
+}
