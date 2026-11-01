@@ -2,369 +2,243 @@
 
 # Delivery Experience Intelligence
 
-### Predict delivery risks · Check package images · Make better outreach decisions
-
+### Predict delivery risks with ML · Detect packages with computer vision · Support drivers with agentic, tool-calling workflows
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Google Cloud](https://img.shields.io/badge/Google_Cloud-GCP-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white)
 ![BigQuery](https://img.shields.io/badge/BigQuery-Analytics-669DF6?style=for-the-badge&logo=googlebigquery&logoColor=white)
 ![Vertex AI](https://img.shields.io/badge/Vertex_AI-Computer_Vision-8E44AD?style=for-the-badge)
-![Tests](https://img.shields.io/badge/Tests-31_Passing-2E7D32?style=for-the-badge)
+![Tests](https://img.shields.io/badge/Tests-53_Passing-2E7D32?style=for-the-badge)
 
-**[View project presentation](https://docs.google.com/presentation/d/1dMVPmu7jhGnf5r54qxO6Emqcw6QEn9v4e-NpkpGVsvw/edit?usp=sharing)**
+**[Project presentation](https://docs.google.com/presentation/d/1dMVPmu7jhGnf5r54qxO6Emqcw6QEn9v4e-NpkpGVsvw/edit?usp=sharing)**
 
 </div>
 
 ---
 
-## Project Overview & Key Results
+## The business problem
 
-Built a delivery intelligence platform on **Google Cloud** using machine learning, computer vision, and agentic AI to identify delivery risks, analyze package visibility, and support proactive customer outreach.
+Delivery issues can make things harder for both customers and drivers:
 
-| Area | Approach & Technologies | Key Results |
-|---|---|---|
-| **Delivery Risk Prediction** | HistGradientBoosting, BigQuery ML boosted trees, 99,441 Olist orders | **ROC-AUC: 0.649** for late deliveries and **0.601** for low reviews (local models) |
-| **Computer Vision** | Vertex AI AutoML, 4,712 Open Images photos | **99.58% accuracy** on 471 held-out images |
-| **Agentic AI** | Gemini 2.5 Flash, predefined decision rules, BigQuery audit logs | **500/500 decisions** matched independent rule checks; 4 outreach drafts created |
-| **Cloud Engineering** | Pub/Sub, BigQuery, historical event replay | **6,235 events/sec**, with no message loss in the benchmark |
-| **Experimentation** | A/B testing, power analysis, sequential monitoring | Designed and simulated an early-delay notification experiment; **no live results** |
+- **Customers:** Late deliveries, missing packages, or unclear proof of delivery can mean a frustrating experience and more support requests.
+- **Drivers:** Missing entrance details, outdated gate codes, and unclear placement instructions can lead to delays, failed attempts, and unnecessary back-and-forth.
 
-*This project uses public datasets and historical replays, not live deliveries. Computer vision was evaluated on general images rather than actual proof-of-delivery photos. Agent validation measures rule compliance, not prediction accuracy. No customer messages were sent, and no live A/B test was conducted.*
+In the Olist data, about 8.1% of orders were late, which gave me a starting point for exploring delivery risk and customer reviews.
 
-## The Problem
+## The solution
 
-Delivery issues aren't always identified early enough to act on them. A delayed shipment, missing package, or poor delivery experience can affect customer satisfaction, especially when the problem is only noticed after a customer reports it.
+I built a delivery analytics platform on Google Cloud using public datasets and historical event replay (simulating delivery updates using past order data), and later added a Driver Intelligence prototype that runs locally to explore how drivers can get better delivery instructions before reaching a stop.
 
-## Tech stack
+## System Architecture
+![Delivery Experience Intelligence System Architecture](docs/assets/system_architecture.png)
 
-| Area | Technologies |
+## Results at a glance
+
+| Solution | Implementation | Measured result | Potential business use |
+|---|---|---|---|
+| **Delivery risk prediction** | **HistGradientBoosting** with purchase-time features and temporal validation; **BigQuery ML boosted trees** | Local ROC-AUC: **0.649** late delivery, **0.601** low review; BigQuery ML: **0.616** and **0.575** | Prioritize orders for further investigation or proactive support |
+| **Event processing** | **Pub/Sub → BigQuery** historical order-event replay | **19,770 events**, **6,235 events/sec**, **0 message loss** in benchmark | Handle order-event volume without losing events |
+| **Package visibility** | **Vertex AI AutoML** classifier trained on **4,712 Open Images photos** | **99.58% accuracy (469/471)** on held-out images | Add a visibility signal to proof-of-delivery review workflows |
+| **Outreach decision workflow** | Deterministic eligibility rules, **Gemini 2.5 Flash** drafting, BigQuery audit log | **500/500** decisions matched independent rule checks; **4** drafts generated | Generate traceable outreach drafts only for eligible cases |
+| **Experiment design** | Customer-level randomization, power analysis, sequential monitoring | Designed for **~750 customers per arm** at **80% power** under modeled assumptions; not yet run live | Measure whether earlier notifications improve customer experience |
+| **Driver Intelligence prototype** | **Python + SQLite**, stop memory, tool-driven alerts, driver feedback | **100/100** expected decisions vs **24/100** for a simple retrieval baseline, on 100 synthetic scenarios I wrote | Help drivers see relevant stop instructions before arrival |
+
+> **Project scope:** This project was built and evaluated using public datasets, historical delivery events, and Google Cloud runs rather than live delivery data. Package visibility was tested on public images, not actual proof-of-delivery photos. The outreach workflow was evaluated for rule compliance, but its impact on customer experience hasn't been tested. No customer messages were sent, and the A/B test was designed and simulated rather than run live. Driver Intelligence is currently a local prototype evaluated using synthetic delivery data.
+## Data used
+
+| Dataset | Scale / contents | Used for | Source / licensing note |
+|---|---|---|---|
+| **Olist Brazilian E-Commerce** | **99,441 orders**, timestamps, customer reviews | Risk modeling, historical replay, A/B test design | Olist public dataset (Kaggle), CC BY-NC-SA 4.0 |
+| **Amazon Last-Mile Routing** | **6,112 routes** with stop sequences and zones | Route-pattern analysis | AWS Registry of Open Data; CC BY-NC 4.0 |
+| **Open Images** | **4,712 selected photos** | Package-present vs door-only image classification | CVDF mirror; annotations CC BY 4.0, image licenses vary |
+| **OpenStreetMap (Austin)** | Public map/address features | Address and geographic analysis | ODbL |
+| **Synthetic stop-level records** | Simulated instructions, approach events, feedback; 100 evaluation scenarios | Driver Intelligence development and evaluation | Generated specifically for the prototype |
+
+## How the delivery analytics platform works
+
+- **Replay:** Publish historical order events through Pub/Sub into BigQuery.
+
+- **Predict:** Train scikit-learn and BigQuery ML models on purchase-time information. Evaluate with time-based splits.
+
+- **Inspect:** Use OpenCV for image-quality checks and Vertex AI AutoML for package visibility. This is evaluated separately from the decision flow.
+
+- **Decide:** Apply explicit outreach criteria before generating a message. Gemini helps with wording and does not override the rules.
+
+- **Verify:** Log every decision and recompute the rules independently to check them.
+
+- **Test:** Design a customer-level A/B experiment with sticky assignment and O'Brien-Fleming monitoring.
+
+### Model evaluation
+
+| Task | HistGradientBoosting (local) | BigQuery ML boosted trees |
+|---|---:|---:|
+| Late delivery ROC-AUC | **0.649** | **0.616** |
+| Low review ROC-AUC | **0.601** | **0.575** |
+
+(Purchase-time data can't show what happens during transit, so carrier scans and weather are some features to try next.)
+
+### Package visibility (computer vision)
+
+I trained a Vertex AI AutoML image classifier on 4,712 Open Images photos to tell whether a package is visible. OpenCV handles basic image-quality checks.
+
+| Evaluation metric | Result |
+|---|---:|
+| **Accuracy** | **99.58% (469/471 images)** |
+| Package precision | 1.0000 |
+| Package recall | 0.9910 |
+| F1 score (package / no package) | 0.9955 / 0.9960 |
+| Vertex AI auPRC | 0.9937 |
+
+**Key findings**
+
+- The model classified 469 of 471 images correctly. Both errors were missed packages.
+
+- Negatives were doors with no Box labels, so the model had to tell a doorstep with a package from one without.
+
+- Train, validation, and test were split by near-duplicate cluster. An audit found zero overlap.
+
+- OpenCV quality checks (70.2% agreement) and Gemini image assessment (64.6%) were evaluated separately against weak labels. These aren't comparable to the AutoML accuracy.
+
+<details>
+
+<summary><strong>View evaluation methodology</strong></summary>
+
+- **Test set:** 221 package images and 250 non-package images.
+
+- **Negative samples:** Open Images photos with at least one human-drawn Door box and no Box annotations.
+
+- **Splitting:** Near-duplicate clustering with dHash (seed 17), so similar photos stay in the same split.
+
+- **Leakage check:** The audit found 6 true near-duplicate groups. All stayed within a single split, with zero overlap between train, validation, and test.
+
+- **Manual review:** I reviewed 150 non-package images and found no clear package contamination.
+
+- **Confidence interval:** With 471 test images, the 95% interval for accuracy is roughly 98.5% to 99.9%.
+
+</details>
+
+> **Scope:** These are general Open Images photos. The Box label is a proxy for a delivery package. Performance on real proof-of-delivery images hasn't been evaluated.
+
+## Results in pictures
+
+| Delivery patterns | Customer experience |
 |---|---|
-| **Languages & Data Engineering** | **Python, SQL, BigQuery, Cloud Storage, Pub/Sub** |
-| **Machine Learning** | **scikit-learn, HistGradientBoosting, BigQuery ML** |
-| **Computer Vision** | **OpenCV, Vertex AI AutoML** |
-| **Generative AI & Agents** | **Gemini 2.5 Flash, deterministic decision rules, BigQuery audit logging** |
-| **Experimentation & Engineering** | **A/B testing, power analysis, sequential monitoring, pytest, Docker, GitHub Actions** |
+| ![Late delivery rate by Brazilian state](dashboard/preview/late_by_state.png) | ![Review scores split by lateness](dashboard/preview/review_by_late.png) |
+| Late-delivery rates ranged from **~19.7% in Maranhão** to **~7.1% in Rio Grande do Sul** in the analyzed orders. | Late orders received lower review scores on average, motivating the combined risk analysis. |
 
-## Why I built it
+| Route analysis | Package visibility |
+|---|---|
+| ![Zone revisits in Amazon routes](dashboard/preview/zone_revisits.png) | ![Package visibility predictions on held-out images](docs/assets/cv_predictions.png) |
+| **64.4%** of analyzed Amazon routes revisited a delivery zone. | Sample predictions from the held-out image set; overall result **469/471** correct. |
 
-A late delivery can mean extra operational work and a frustrating experience for the customer. I wanted to see how far I could get using the information available before a delivery goes wrong.
+## Driver Intelligence · Working prototype
 
-The project explores five connected questions:
+**Local prototype | Simulated stop data and events**
 
-1. Can purchase-time information help predict late deliveries or low reviews?
-2. Can historical order updates be processed through a streaming pipeline?
-3. Can computer vision identify whether a package is visible in an image?
-4. Can an AI-assisted workflow draft outreach only when predefined rules call for it?
-5. How could a company test whether early delay notifications actually help?
+**Goal:** Give drivers reliable entrance, access, and package placement instructions before they reach a stop.
 
-## System overview
+| Capability | What I built | Demonstrated outcome |
+|---|---|---|
+| **Delivery Stop Memory** | Python/SQLite records for entrances, package placement, contact preferences, restrictions, verification status, and expiry | Keeps an auditable instruction history and resolves conflicting records with priority rules |
+| **Proactive driver alerts** | 9-step tool-driven workflow for event validation, authorization, instruction retrieval, and warning-first cards | 6 recorded demo traces with decisions and fallback behavior |
+| **Driver feedback loop** | Flags incorrect access information for re-verification without silently replacing verified instructions | Full cycle shown: approach, alert, feedback, updated memory, next alert |
 
-```mermaid
-flowchart TB
-    subgraph DATA["Public datasets (kept separate)"]
-        OLIST["Olist · 99,441 orders"]
-        AMZ["Amazon · 6,112 routes"]
-        IMG["Open Images · 4,712 images"]
-        OSM["OpenStreetMap · Austin data"]
-    end
-    subgraph PIPE["Data engineering"]
-        BQ[("BigQuery")]
-        PUB["Pub/Sub historical replay"]
-    end
-    subgraph ML["Models and analysis"]
-        RISK["Late-delivery and low-review models"]
-        CV["OpenCV + Vertex AI AutoML"]
-        ADDRESS["Address analysis"]
-    end
-    subgraph DEC["Decision workflow"]
-        POLICY["Deterministic rules + Gemini drafts"]
-        AUDIT[("BigQuery audit log")]
-    end
-    AB["A/B test design and simulation"]
+### Example driver experience
 
-    OLIST --> BQ
-    OLIST --> PUB
-    PUB --> BQ
-    AMZ --> BQ
-    BQ --> RISK
-    BQ --> AB
-    IMG --> CV
-    OSM --> ADDRESS
-    RISK --> POLICY
-    CV -.->|"separate evaluation / controlled scenarios"| POLICY
-    POLICY --> AUDIT
+**Example card (synthetic)**
 
-    classDef data fill:#e9f6ef,stroke:#23865a,color:#143b2a;
-    classDef eng fill:#e8f1ff,stroke:#3978c6,color:#173c70;
-    classDef model fill:#fff1dd,stroke:#c87b2b,color:#75420e;
-    classDef decision fill:#f4e9ff,stroke:#8654b4,color:#4d286c;
-    class OLIST,AMZ,IMG,OSM data;
-    class BQ,PUB eng;
-    class RISK,CV,ADDRESS,AB model;
-    class POLICY,AUDIT decision;
+> **Restriction:** Do not leave packages unattended in the lobby.  
+> **Entrance:** Side entrance near mailroom · Verified  
+> **Placement:** Apartment door, unit 4B · Verified  
+> **Contact:** Text on arrival; do not knock  
+> **Gate code:** Verified status shown; code value is not exposed
+
+**Example decision trace**
+
+```text
+check_delivery_restrictions   -> 1 restriction found -> decision: warn
+resolve_instruction_conflicts -> verified customer instruction wins -> loser suppressed
+decide_gate_code_display      -> suppress value, show status only
 ```
 
-## How it works
+**Development status:** Driver Intelligence is a working local prototype built and evaluated with simulated stop data, approach events, and driver feedback. The 100/100 result measures agreement with expected decisions in designed synthetic scenarios, not improvements measured with real drivers.
 
-### 01 · Ingest and replay order events
+**Next phase**
 
-I used Python, SQL, and BigQuery to process historical Olist orders. A Pub/Sub replay published **19,770 historical events** and reached **6,235 events/second** in the measured benchmark, with no message loss.
+- Use real stop-level records and driver feedback.
 
-### 02 · Predict delivery risks
+- Complete and validate BigQuery and Pub/Sub integration, including full-field updates in the BigQuery adapter.
 
-I trained models for **late delivery** and **low customer review** risk using scikit-learn and BigQuery ML. Features were restricted to information available at purchase time, and I used temporal train/test splits to reduce leakage.
+- Assess performance in realistic delivery workflows.
 
-### 03 · Check images
+## Technology stack and design choices
 
-I trained a **Vertex AI AutoML package-visibility classifier** using **4,712 Open Images photos**. OpenCV handles basic blur and brightness checks; Gemini was evaluated separately for image assessment. These are general labeled images, **not actual proof-of-delivery photos**.
-
-### 04 · Evaluate whether action is needed
-
-The decision workflow uses predefined rules to decide whether to take no action or create a customer/driver notification draft. Gemini supports draft generation; it does not override the decision rules. **Nothing is sent automatically.**
-
-### 05 · Verify and log decisions
-
-I replayed **500 historical orders** through the cloud agent workflow. **496 required no action** and **4 produced customer outreach drafts**. An independent rule check matched **all 500 decisions**.
-
-### 06 · Design an outreach experiment
-
-I designed a customer-level A/B test comparing **normal delivery updates** with **early delay notifications**. It includes power analysis, sticky randomization, and sequential monitoring. The experiment was **simulated and validated**.
-
----
-
-## Results
-
-### Delivery risk models
-
-| Prediction task | Model / environment | ROC-AUC |
-|---|---|---:|
-| Late delivery | HistGradientBoosting, local temporal split | **0.649** |
-| Late delivery | Boosted trees, BigQuery ML | **0.616** |
-| Low review | HistGradientBoosting, local temporal split | **0.601** |
-| Low review | Boosted trees, BigQuery ML | **0.575** |
-
-These results are better than random ranking but still modest. Purchase-time data cannot capture everything that happens during a delivery, and I wanted the evaluation to reflect that.
-
-### Computer vision · Package visibility
-
-| Metric | Held-out test result |
-|---|---:|
-| Accuracy | **99.58%** |
-| Correct classifications | **469 / 471** |
-| Package precision | **1.0000** |
-| Package recall | **0.9910** |
-| Per-class F1 | **0.9960 / 0.9955** |
-| Vertex AI evaluation auPRC | **0.9937** |
-
-The classifier made **no false-positive package predictions** in this held-out test set and missed **2 of 221** package images. This is a result on the selected Open Images data; it does not establish performance on real delivery photos.
-
-| Image pipeline component | Reported evaluation | Role |
+| Area | Tools / approach | Why it matters |
 |---|---|---|
-| OpenCV blur / brightness checks | 70.2% agreement with weak labels | Basic image-quality screening |
-| Vertex AI AutoML | 99.6% accuracy on clean held-out test set | Main package visibility classifier |
-| Gemini image evaluation | 64.6% agreement with weak labels | Additional image assessment |
+| Data and cloud | Python, SQL, BigQuery, Cloud Storage, Pub/Sub | Reproducible analysis and event processing |
+| ML | scikit-learn, HistGradientBoosting, BigQuery ML | Compares local and cloud modeling |
+| Vision | OpenCV, Vertex AI AutoML | Separates image-quality checks from package detection |
+| AI workflows | Gemini 2.5 Flash, deterministic rules, audit logs | Traceable decisions. Generative AI only supports wording |
+| Driver prototype | Python, SQLite, tool-driven workflow | Fast local iteration and structured stop memory |
+| Experimentation | Power analysis, sticky randomization, sequential monitoring | A framework for measuring future impact |
 
-*These figures come from different evaluation setups and are not directly comparable accuracy scores.*
+**Design choices**
 
-### Streaming and agent
+- **Controlled AI decisions:** Deterministic rules control actions; generative AI supports wording, with a fallback when unavailable.
 
-| Check | Result |
-|---|---:|
-| Pub/Sub throughput benchmark | **6,235 events/sec** |
-| Historical events published | **19,770** |
-| Message loss in benchmark | **0** |
-| Historical orders evaluated by agent | **500** |
-| No-action decisions | **496** |
-| Customer outreach drafts | **4** |
-| Decisions matching independently recomputed rules | **500 / 500** |
-| Agent dry-run logic checks | **5 / 5** |
+- **Nothing sends automatically:** Outreach drafts are logged for a person to review. The system has no send step.
 
-### A/B experiment design
+- **Transparent retrieval:** Structured SQL queries keep stop-instruction lookup explainable and auditable.
 
-**Question:** Would an early warning about a possible delay improve customer experience compared with standard delivery updates?
+- **Local-first development:** SQLite supports the current prototype; the BigQuery adapter requires further development before production use.
 
-| Design choice | Approach |
-|---|---|
-| Control | Standard delivery updates |
-| Treatment | Additional early-warning message for eligible deliveries |
-| Assignment | 50/50 at the customer level, with sticky assignment |
-| Planned sample | ~750 customers per arm (~1,500 total) |
-| Power | 80% under simulated effect assumptions |
-| Sequential monitoring | O'Brien-Fleming boundaries |
-| CUPED | Not applied; available covariates explained under 0.3% of variance |
-| Status | **Designed and replay-validated; never run live** |
+## Getting started
 
-I used customer-level assignment because multiple orders from the same customer should not end up in different experiment groups.
-
----
-
-## A few visuals
-
-### Where deliveries were late
-
-![Late delivery rate by Brazilian state](dashboard/preview/late_by_state.png)
-
-In the Olist data, late-delivery rates varied by state: approximately **19.7% in Maranhão** versus **7.1% in Rio Grande do Sul**.
-
-### How delays relate to reviews
-
-![Review scores split by lateness](dashboard/preview/review_by_late.png)
-
-Late orders received lower customer ratings on average, which motivated looking at late-delivery and low-review risk together.
-
-### Route patterns in a separate Amazon dataset
-
-![Zone revisits in Amazon routes](dashboard/preview/zone_revisits.png)
-
-**64.4%** of analyzed Amazon routes revisited a delivery zone.
-
-### Package visibility predictions
-
-![Package visibility predictions on held-out images](docs/assets/cv_predictions.png)
-
-Twelve examples from the held-out image test set, showing predicted labels, confidence scores, and reference labels. All 12 examples shown are correct; the full test result is **469/471**.
-
-## Run it locally
-
-**Requirements:** Python 3.10+, about 2 GB of disk space, and internet access for the initial data downloads. The local workflow does not require a Google Cloud account.
-
-**1. Set up a Python environment**
+**Requirements:** Python 3.10+, about 2 GB of disk space, and internet for the first public-data download. Core local workflows don't need a GCP account.
 
 ```bash
 python -m venv .venv
+# macOS / Linux:
 source .venv/bin/activate
+# Windows PowerShell: .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-```
-
-For Windows PowerShell, use `.venv\Scripts\Activate.ps1` instead of the `source` command.
-
-**2. Download the public datasets**
-
-```bash
+# Public datasets and core platform
 python scripts/download_olist.py --out data/raw/olist
 python scripts/download_amazon.py --out data/raw/amazon
-```
-
-**3. Run the tests**
-
-```bash
-pytest tests/ -q
-```
-
-**4. Train the local risk models**
-
-```bash
+python -m pytest tests/ -q   # 53 tests: 31 core + 22 for Driver Intelligence
 python -c "from src.ml import train_all; train_all('data/raw/olist', 'evals/risk'); print('Metrics written to evals/risk/')"
-```
-
-**5. Run the agent demo**
-
-```bash
 python scripts/demo_end_to_end.py --olist-dir data/raw/olist
-```
-
-**6. Replay events locally**
-
-```bash
 python scripts/e2e_local.py --orders 2000
+# Driver Intelligence local demo
+python scripts/demo_driver_intelligence.py
 ```
 
-The project includes **31 automated tests**. Evaluation outputs are saved under `evals/`.
+Evaluation outputs are stored in `evals/`.
 
-## Google Cloud implementation
-
-The cloud workflows ran on Google Cloud using BigQuery, Pub/Sub, Vertex AI, and Gemini. Reproducing them requires a GCP project with billing, authenticated Google Cloud CLI access, and the APIs documented in [`docs/operations/gcp-setup.md`](docs/operations/gcp-setup.md).
+The original cloud-platform run cost roughly $28 before credits. See the [cost ledger](docs/operations/cost-ledger.md) for details.
 
 <details>
-<summary><strong>Show cloud commands</strong></summary>
 
-**BigQuery tables, views, and risk model**
+<summary><strong>Google Cloud reproduction commands</strong></summary>
+
+Cloud reproduction needs billing, an authenticated Google Cloud CLI, and the APIs listed in [`docs/operations/gcp-setup.md`](docs/operations/gcp-setup.md). Cloud operations can incur charges. See [`docs/operations/cost-ledger.md`](docs/operations/cost-ledger.md).
 
 ```bash
 bq query --use_legacy_sql=false < sql/bigquery_ddl.sql
 bq query --use_legacy_sql=false < sql/dashboard_views.sql
 bq query --use_legacy_sql=false < sql/bqml_late_delivery.sql
-```
-
-**Pub/Sub historical event replay**
-
-```bash
 python gcp/publish_events.py
-```
-
-**Vertex AI image dataset and training (Cloud Shell / bash)**
-
-```bash
 python gcp/fetch_s3.py
 bash gcp/stage3.sh
-```
-
-**Independent agent audit verification**
-
-```bash
 python gcp/verify_agent_audit.py
 ```
 
 </details>
 
-Cloud training and API calls may incur costs. See [`docs/operations/cost-ledger.md`](docs/operations/cost-ledger.md) for the recorded project costs.
+## Next steps
 
-### What runs where?
-
-| Component | Local | Google Cloud |
-|---|:---:|:---:|
-| Automated tests (31) | Yes | Not required |
-| scikit-learn risk models | Yes | Not required |
-| Agent demo and experiment simulation | Yes | Cloud agent also evaluated |
-| BigQuery warehouse and BigQuery ML | No | Yes |
-| Event processing | Local replay | Pub/Sub |
-| AutoML training and batch prediction | No | Vertex AI |
-| Gemini image evaluation | No | Yes |
-
-## What I learned and what I'd improve
-
-- **Risk prediction is difficult with early information.** ROC-AUC scores around 0.6 show some signal, but live operational features would be needed to explore better performance.
-- **High image accuracy needs context.** The 99.6% result is from a held-out public image dataset, not real proof-of-delivery photos.
-- **Decision verification matters.** All 500 replayed agent decisions followed the specified rules, but that is different from proving the rules themselves improve outcomes.
-- **A/B tests need to be planned before claiming impact.** I implemented the design and simulation, but no live treatment effect was measured.
-- **Separate datasets should stay separate.** The project uses Olist, Amazon, OpenStreetMap, and Open Images for different tasks without implying they describe the same deliveries.
-- **Cloud work needs cost and execution controls.** I documented setup, evaluation, and operational decisions to make the implementation easier to reproduce.
-
-## Repository guide
-
-```text
-delivery-experience-intelligence/
-├── src/
-│   ├── ingestion/       Dataset download and validation
-│   ├── streaming/       Event schemas and replay
-│   ├── ml/              Risk models and evaluation
-│   ├── vision/          OpenCV, AutoML, Gemini evaluation
-│   ├── address/         OpenStreetMap analysis
-│   ├── agents/          Decision rules and audit logging
-│   ├── experiments/     A/B test design and simulation
-│   └── api/             API components
-├── gcp/                 Cloud scripts
-├── sql/                 BigQuery tables, views, and models
-├── scripts/             Local runners and charts
-├── tests/               Automated tests
-├── evals/               Saved evaluation results
-├── data/vision/         Image dataset manifests
-├── dashboard/           Chart previews
-├── docs/                Architecture, operations, presentation
-├── docker/              Container configuration
-└── .github/workflows/    CI
-```
-
-For more detail, see [`STATUS.md`](STATUS.md), [`EXECUTION_REPORT.md`](EXECUTION_REPORT.md), and [`docs/decisions/`](docs/decisions/).
-
-## Datasets and licensing
-
-| Dataset | Source | License / note |
-|---|---|---|
-| Olist Brazilian E-Commerce | Olist public dataset | Attribution requirements apply |
-| Amazon Last-Mile Routing | AWS Registry of Open Data | CC BY-NC 4.0 |
-| OpenStreetMap (Austin) | OpenStreetMap / Overpass API | ODbL |
-| Open Images | Official CVDF S3 mirror | CC BY 4.0 annotations; image licenses may vary |
-
-Raw datasets are not committed to this repository. Download scripts and manifests are included instead.
+- **Improve risk signals:** Try carrier scans, weather, and other operational features beyond purchase-time data.
+- **Expand visual validation:** Evaluate package visibility and placement on real proof-of-delivery images.
+- **Measure impact:** Run the designed experiment to test whether timely outreach improves customer outcomes.
+- **Harden Driver Intelligence:** Use real permissioned data, with access controls, monitoring, and evaluation in real delivery workflows.
 
 ---
