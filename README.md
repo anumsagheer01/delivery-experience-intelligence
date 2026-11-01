@@ -216,7 +216,7 @@ The original cloud-platform run cost roughly $28 in free credits. See the [cost 
 
 <summary><strong>Google Cloud reproduction commands</strong></summary>
 
-Cloud reproduction needs billing, an authenticated Google Cloud CLI, and the APIs listed in [`docs/operations/gcp-setup.md`](docs/operations/gcp-setup.md). Cloud operations can incur charges. See [`docs/operations/cost-ledger.md`](docs/operations/cost-ledger.md).
+Cloud operations can incur charges. See [`docs/operations/cost-ledger.md`](docs/operations/cost-ledger.md).
 
 ```bash
 bq query --use_legacy_sql=false < sql/bigquery_ddl.sql
