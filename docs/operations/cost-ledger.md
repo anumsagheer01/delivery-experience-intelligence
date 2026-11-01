@@ -1,15 +1,8 @@
 # Cost ledger
 
-All figures in USD. "Measured" means observed in this environment or quoted
-from official pricing at build time. Nothing here was charged to the GCP
-project, because this environment has no GCP credentials (see STATUS.md).
+All figures in USD. 
 
-## Local execution (this build): $0
-
-Everything executed here ran on a local VM: dataset downloads (public
-registries), DuckDB, scikit-learn, OpenCV. No cloud spend.
-
-## Projected GCP costs for the documented deployment
+## Projected GCP costs 
 
 | Component | Basis | Projected cost |
 |---|---|---|
@@ -21,17 +14,3 @@ registries), DuckDB, scikit-learn, OpenCV. No cloud spend.
 | Vertex AI AutoML image training | ~3 node-hours (estimate; verify in console) | $10-$60 one-time |
 | Gemini flash eval (300 images) | per-1k images pricing | < $2 |
 | Cloud Vision (300 images) | first 1000/month free | $0 |
-
-Total projected deployment: well under the $50 target excluding AutoML
-training, which is the one line item to verify in the console before running.
-The enforced caps ($10 Gemini, $10 Vertex AI, $5 Cloud Run monthly) bound the
-worst case even if estimates are off.
-
-## Rules applied
-
-- Budgets are alerts, not limits. Enforced caps are set separately.
-- BigQuery maximum bytes billed is set on every analytical query.
-- No Dataflow streaming jobs (would idle-burn); the documented Dataflow
-  comparison is batch or short-lived only.
-- Vertex AI endpoints are deleted after evaluation; artifacts kept in GCS.
-- Cloud Run minimum instances = 0 everywhere.
