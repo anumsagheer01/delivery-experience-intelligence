@@ -210,9 +210,7 @@ python scripts/e2e_local.py --orders 2000
 python scripts/demo_driver_intelligence.py
 ```
 
-Evaluation outputs are stored in `evals/`.
-
-The original cloud-platform run cost roughly $28 before credits. See the [cost ledger](docs/operations/cost-ledger.md) for details.
+The original cloud-platform run cost roughly $28 in free credits. See the [cost ledger](docs/operations/cost-ledger.md) for details.
 
 <details>
 
