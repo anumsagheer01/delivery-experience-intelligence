@@ -1,14 +1,19 @@
-# Evaluation outputs
+# Evaluation Results
 
-Every file here was produced by running the code in this repo against real
-data. Provenance:
+This folder contains evaluation results and supporting files for Delivery Experience Intelligence.
 
-- `risk/` : `python -m src.ml` training outputs (JSON metrics per model).
-  See `scripts/` for the exact commands. Splits and features are documented
-  in `src/ml/__init__.py`.
-- `vision/` : `evals/vision/opencv_baselines.csv` from
-  `src/vision/__init__.py` on 100 real Open Images photos.
-- `agent/` : `scripts/eval_agent.py` dry-run results on 5 controlled
-  scenarios.
+## Available in this repository
 
-Nothing in this directory is hand-written or estimated.
+### Driver Intelligence (`driver_intelligence/`)
+
+- `results.json` - Evaluation summary comparing the Driver Intelligence workflow with a retrieval baseline.
+- `scenarios.json` - 100 author-written synthetic delivery scenarios.
+- `traces/` - Recorded demo and evaluation decision traces.
+
+These evaluations test whether the prototype follows expected decision rules. They do not measure performance with real drivers.
+
+## Other evaluations
+
+The delivery risk, computer vision, streaming, and customer outreach evaluations were performed using public datasets and Google Cloud.
+
+Their original evaluation outputs are not currently committed to this repository. The main README documents the reported results and the scripts used to generate them.
