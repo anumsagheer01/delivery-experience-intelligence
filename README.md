@@ -2,7 +2,7 @@
 
 # Delivery Experience Intelligence
 
-### Predict delivery risks with ML · Detect packages with computer vision · Support drivers with agentic, tool-calling workflows
+### Predict Delivery Risks · Detect Packages with Computer Vision · Support Drivers with AI-Assisted Workflows
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Google Cloud](https://img.shields.io/badge/Google_Cloud-GCP-4285F4?style=for-the-badge&logo=googlecloud&logoColor=white)
 ![BigQuery](https://img.shields.io/badge/BigQuery-Analytics-669DF6?style=for-the-badge&logo=googlebigquery&logoColor=white)
@@ -22,7 +22,8 @@ Delivery issues can make things harder for both customers and drivers:
 - **Customers:** Late deliveries, missing packages, or unclear proof of delivery can mean a frustrating experience and more support requests.
 - **Drivers:** Missing entrance details, outdated gate codes, and unclear placement instructions can lead to delays, failed attempts, and unnecessary back-and-forth.
 
-In the Olist data, about 8.1% of orders were late, which gave me a starting point for exploring delivery risk and customer reviews.
+In the Olist data, about 8.1% of orders were late, which gave me a starting point for exploring delivery risk and customer reviews. 
+Late orders averaged 2.6 stars against 4.3 for on-time orders. Failed attempts can send the package back on the truck and lead to support calls.
 
 ## The solution
 
@@ -35,14 +36,17 @@ I built a delivery analytics platform on Google Cloud using public datasets and 
 
 | Solution | Implementation | Measured result | Potential business use |
 |---|---|---|---|
-| **Delivery risk prediction** | **HistGradientBoosting** with purchase-time features and temporal validation; **BigQuery ML boosted trees** | Local ROC-AUC: **0.649** late delivery, **0.601** low review; BigQuery ML: **0.616** and **0.575** | Prioritize orders for further investigation or proactive support |
-| **Event processing** | **Pub/Sub → BigQuery** historical order-event replay | **19,770 events**, **6,235 events/sec**, **0 message loss** in benchmark | Handle order-event volume without losing events |
+| **Delivery risk prediction** | **HistGradientBoosting** with purchase-time features and temporal validation; **BigQuery ML boosted trees** | Local ROC-AUC: **0.649** late delivery, **0.601** low review; BigQuery ML: **0.616** and **0.575** | Flag the riskiest orders so a human can check them before the customer complains |
+| **Event processing** | **Pub/Sub → BigQuery** historical order-event replay | **19,770 events**, **6,235 events/sec**, **0 message loss** in benchmark | Keep order data flowing without losing events |
 | **Package visibility** | **Vertex AI AutoML** classifier trained on **4,712 Open Images photos** | **99.58% accuracy (469/471)** on held-out images | Add a visibility signal to proof-of-delivery review workflows |
 | **Outreach decision workflow** | Deterministic eligibility rules, **Gemini 2.5 Flash** drafting, BigQuery audit log | **500/500** decisions matched independent rule checks; **4** drafts generated | Generate traceable outreach drafts only for eligible cases |
 | **Experiment design** | Customer-level randomization, power analysis, sequential monitoring | Designed for **~750 customers per arm** at **80% power** under modeled assumptions; not yet run live | Measure whether earlier notifications improve customer experience |
 | **Driver Intelligence prototype** | **Python + SQLite**, stop memory, tool-driven alerts, driver feedback | **100/100** expected decisions vs **24/100** for a simple retrieval baseline, on 100 synthetic scenarios I wrote | Help drivers see relevant stop instructions before arrival |
 
-> **Project scope:** This project was built and evaluated using public datasets, historical delivery events, and Google Cloud runs rather than live delivery data. Package visibility was tested on public images, not actual proof-of-delivery photos. The outreach workflow was evaluated for rule compliance, but its impact on customer experience hasn't been tested. No customer messages were sent, and the A/B test was designed and simulated rather than run live. Driver Intelligence is currently a local prototype evaluated using synthetic delivery data.
+Understanding the results: The risk model achieved a ROC-AUC of 0.649, showing it can help identify deliveries that may need attention, though it isn't strong enough to make decisions on its own. The 500/500 result shows that the outreach workflow followed its predefined rules correctly, but its impact on customer experience still needs to be tested.
+
+> **Project scope:** This project uses public datasets, historical delivery events, and simulated scenarios rather than live delivery data. Package detection was tested on public images, not actual proof-of-delivery photos. No customer messages were sent, and the A/B test has not been run live. Driver Intelligence is currently a local prototype.
+
 ## Data used
 
 | Dataset | Scale / contents | Used for | Source / licensing note |
@@ -104,6 +108,8 @@ I trained a Vertex AI AutoML image classifier on 4,712 Open Images photos to tel
 
 - **Test set:** 221 package images and 250 non-package images.
 
+- **Package samples:** Open Images photos with at least one human-drawn Door box and at least one human-drawn Box box.
+
 - **Negative samples:** Open Images photos with at least one human-drawn Door box and no Box annotations.
 
 - **Splitting:** Near-duplicate clustering with dHash (seed 17), so similar photos stay in the same split.
@@ -161,14 +167,6 @@ decide_gate_code_display      -> suppress value, show status only
 ```
 
 **Development status:** Driver Intelligence is a working local prototype built and evaluated with simulated stop data, approach events, and driver feedback. The 100/100 result measures agreement with expected decisions in designed synthetic scenarios, not improvements measured with real drivers.
-
-**Next phase**
-
-- Use real stop-level records and driver feedback.
-
-- Complete and validate BigQuery and Pub/Sub integration, including full-field updates in the BigQuery adapter.
-
-- Assess performance in realistic delivery workflows.
 
 ## Technology stack and design choices
 
@@ -236,9 +234,8 @@ python gcp/verify_agent_audit.py
 
 ## Next steps
 
-- **Improve risk signals:** Try carrier scans, weather, and other operational features beyond purchase-time data.
-- **Expand visual validation:** Evaluate package visibility and placement on real proof-of-delivery images.
-- **Measure impact:** Run the designed experiment to test whether timely outreach improves customer outcomes.
-- **Harden Driver Intelligence:** Use real permissioned data, with access controls, monitoring, and evaluation in real delivery workflows.
-
+- Improve risk prediction: Explore carrier scans, weather, and other operational data to improve model performance.
+- Expand package detection: Test computer vision on real proof-of-delivery images.
+- Measure customer impact: Run the planned A/B test to evaluate whether early outreach improves customer experience.
+- Extend Driver Intelligence: Complete BigQuery and Pub/Sub integration, test with real driver data, and evaluate performance in realistic delivery scenarios.
 ---
