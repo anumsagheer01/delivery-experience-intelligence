@@ -38,10 +38,10 @@ I built a delivery analytics platform on Google Cloud using public datasets and 
 |---|---|---|---|
 | **Delivery risk prediction** | **HistGradientBoosting** with purchase-time features and temporal validation; **BigQuery ML boosted trees** | Local ROC-AUC: **0.649** late delivery, **0.601** low review; BigQuery ML: **0.616** and **0.575** | Flag the riskiest orders so a human can check them before the customer complains |
 | **Event processing** | **Pub/Sub → BigQuery** historical order-event replay | **19,770 events**, **6,235 events/sec**, **0 message loss** in benchmark | Keep order data flowing without losing events |
-| **Package visibility** | **Vertex AI AutoML** classifier trained on **4,712 Open Images photos** | **99.58% accuracy (469/471)** on held-out images | Add a visibility signal to proof-of-delivery review workflows |
+| **Package visibility** | **Vertex AI AutoML** classifier trained on **4,712 Open Images photos** | **99.58% accuracy (469/471)** on held-out Open Images door/box photos | Add a visibility signal to proof-of-delivery review workflows |
 | **Outreach decision workflow** | Deterministic eligibility rules, **Gemini 2.5 Flash** drafting, BigQuery audit log | **500/500** decisions matched independent rule checks; **4** drafts generated | Generate traceable outreach drafts only for eligible cases |
 | **Experiment design** | Customer-level randomization, power analysis, sequential monitoring | Designed for **~750 customers per arm** at **80% power** under modeled assumptions; not yet run live | Measure whether earlier notifications improve customer experience |
-| **Driver Intelligence prototype** | **Python + SQLite**, stop memory, tool-driven alerts, driver feedback | **100/100** expected decisions vs **24/100** for a simple retrieval baseline, on 100 synthetic scenarios I wrote | Help drivers see relevant stop instructions before arrival |
+| **Driver Intelligence prototype** | **Python + SQLite**, stop memory, tool-driven alerts, driver feedback | **100/100** expected decisions vs **24/100** retrieval baseline on 100 author-written synthetic scenarios | Help drivers see relevant stop instructions before arrival |
 
 Understanding the results: The risk model achieved a ROC-AUC of 0.649, showing it can help identify deliveries that may need attention, though it isn't strong enough to make decisions on its own. The 500/500 result shows that the outreach workflow followed its predefined rules correctly, but its impact on customer experience still needs to be tested.
 
