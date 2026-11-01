@@ -82,7 +82,15 @@ class BigQueryStopMemoryStore(StopMemoryPort):
                     "BigQuery adapter requires google-cloud-bigquery and "
                     "valid GCP credentials. It is not used by local runs."
                 ) from exc
-            self.client = bigquery.Client(project=self.project)
+
+            try:
+                self.client = bigquery.Client(project=self.project)
+            except Exception as exc:
+                raise RuntimeError(
+                    "BigQuery adapter could not initialize. "
+                    "Check GCP credentials and configuration."
+                ) from exc
+
         return self.client
 
     def _table(self, name: str) -> str:
