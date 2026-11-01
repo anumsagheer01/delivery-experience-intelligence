@@ -1,0 +1,15 @@
+{
+  "project": "delivery-experience-511901",
+  "topic": "dei-order-events",
+  "subscription": "dei-order-events-sub",
+  "events": "real Olist order-lifecycle timestamps (ORDER_PURCHASED, ORDER_APPROVED, CARRIER_HANDOFF, DELIVERED), 5000 orders",
+  "published": 19770,
+  "publish_seconds": 3.2,
+  "publish_events_per_sec": 6235.2,
+  "pulled_total_final_run": 18381,
+  "pulled_total_all_runs": 19770,
+  "message_loss": 0,
+  "schema_check": "OK (event_id, order_id, event_type, event_time, processed_time, order_status)",
+  "executed": "2026-10-17T11:46:32Z in Cloud Shell",
+  "note": "6,235 events/sec is measured CLOUD Pub/Sub publish throughput. The earlier 6,428 figure was local JSONL replay and is superseded for the cloud path. The 1,389 gap between published and final-run pulled counts is explained: earlier verifier runs acked those messages before crashing on a transient gRPC 504; total consumed across all runs equals published."
+}

@@ -1,0 +1,10 @@
+{
+  "note": "Simulation on real outcomes; effect is SIMULATED (+0.3 stars clipped to [1,5], realized +0.233).",
+  "target_power": 0.8,
+  "power_by_per_arm_n": {
+    "482": 0.563,
+    "650": 0.733,
+    "800": 0.827,
+    "950": 0.867
+  }
+}

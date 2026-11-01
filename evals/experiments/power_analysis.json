@@ -1,0 +1,57 @@
+{
+  "note": "All statistics measured from real Olist data. No treatment effect is assumed or claimed.",
+  "eligible_customers_historical": 7608,
+  "baseline_review_mean_late": 2.5689,
+  "baseline_review_std_late": 1.6589,
+  "mean_late_orders_per_customer": 1.007,
+  "within_customer_corr_measured": 0.4545,
+  "design_effect": 1.0032,
+  "alpha": 0.05,
+  "target_power": 0.8,
+  "mde_stars": 0.3,
+  "sample_size_per_arm": 482,
+  "total_sample_size": 963,
+  "mde_table_per_arm": {
+    "0.2": 1083,
+    "0.3": 482,
+    "0.4": 271,
+    "0.5": 173
+  },
+  "olist_orders_per_day": 135.3,
+  "late_orders_per_day": 11.0,
+  "estimated_days_to_enroll_at_olist_volume": 87.7,
+  "sequential_plan": {
+    "n_looks": 4,
+    "method": "Lan-DeMets O'Brien-Fleming alpha spending",
+    "info_fractions": [
+      0.25,
+      0.5,
+      0.75,
+      1.0
+    ],
+    "bounds": [
+      3.92,
+      2.773,
+      2.293,
+      2.04
+    ],
+    "cumulative_alpha_spent": [
+      9e-05,
+      0.00557,
+      0.02363,
+      0.05
+    ]
+  },
+  "cuped_gate_results": {
+    "order_value": {
+      "use": false,
+      "theta": -0.0003080998265797374,
+      "variance_reduction": 0.001593340486917949
+    },
+    "freight_value": {
+      "use": false,
+      "theta": -0.0037582279123640925,
+      "variance_reduction": 0.0027233607850890573
+    }
+  }
+}

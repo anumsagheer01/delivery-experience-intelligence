@@ -1,0 +1,74 @@
+{
+  "label": "SIMULATED treatment effect on real historical outcomes. Not a measured uplift.",
+  "n_eligible_customers_historical": 7608,
+  "simulated_experiment_size": 964,
+  "arm_counts_historical_deterministic_assignment": {
+    "treatment": 3866,
+    "control": 3742
+  },
+  "alpha": 0.05,
+  "n_looks": 4,
+  "scenarios": {
+    "null_delta_0": {
+      "simulated_delta_stars": 0.0,
+      "seeds": 500,
+      "obf_family_wise_rejection_rate": 0.05,
+      "naive_repeated_testing_rejection_rate": 0.13,
+      "mean_stopping_look_when_rejected": 3.6
+    },
+    "effect_plus_0.3_stars": {
+      "simulated_delta_stars": 0.3,
+      "seeds": 500,
+      "obf_family_wise_rejection_rate": 0.598,
+      "naive_repeated_testing_rejection_rate": 0.662,
+      "mean_stopping_look_when_rejected": 3.15
+    }
+  },
+  "detailed_walkthrough_simulated_plus_0.3": [
+    {
+      "look": 1,
+      "n_total": 241,
+      "diff_stars": 0.163,
+      "ci_low": -0.245,
+      "ci_high": 0.571,
+      "p_value": 0.43436,
+      "obf_bound": 3.92,
+      "obf_decision": "continue"
+    },
+    {
+      "look": 2,
+      "n_total": 482,
+      "diff_stars": 0.161,
+      "ci_low": -0.13,
+      "ci_high": 0.452,
+      "p_value": 0.27929,
+      "obf_bound": 2.773,
+      "obf_decision": "continue"
+    },
+    {
+      "look": 3,
+      "n_total": 723,
+      "diff_stars": 0.182,
+      "ci_low": -0.054,
+      "ci_high": 0.418,
+      "p_value": 0.13122,
+      "obf_bound": 2.293,
+      "obf_decision": "continue"
+    },
+    {
+      "look": 4,
+      "n_total": 964,
+      "diff_stars": 0.212,
+      "ci_low": 0.006,
+      "ci_high": 0.417,
+      "p_value": 0.04346,
+      "obf_bound": 2.04,
+      "obf_decision": "continue"
+    }
+  ],
+  "walkthrough_seed_median_of_25": 0,
+  "reading": {
+    "null": "OBF rejection rate sits near 0.05 (type I error controlled); naive repeated testing inflates to about 0.13, demonstrating the peeking problem.",
+    "effect": "At the textbook 482/arm, OBF power is about 0.60, not 0.80, because the 1-5 ceiling attenuates a +0.3 shift to +0.233 realized. See sample_size_calibration.json: about 730/arm reaches 80% OBF power under the ceiling model."
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "events": 98,
+  "action_mix": {
+    "no_action": 92,
+    "draft_customer_message": 6
+  },
+  "late_low": 6,
+  "late_low_actioned": 6
+}

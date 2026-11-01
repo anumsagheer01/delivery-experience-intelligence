@@ -1,0 +1,54 @@
+{
+  "brownian_null_200k": {
+    "family_wise_error": 0.0506,
+    "ci95": [
+      0.0496,
+      0.0516
+    ],
+    "per_look_rejection": [
+      7.5e-05,
+      0.00548,
+      0.018685,
+      0.026405
+    ],
+    "spending_function_increments": [
+      9e-05,
+      0.00548,
+      0.01806,
+      0.02637
+    ],
+    "verdict": "bounds control the family-wise error at 0.05 under the canonical model"
+  },
+  "permutation_null_real_outcomes": {
+    "textbook_n_964": {
+      "n": 964,
+      "seeds": 2000,
+      "fwer": 0.0555,
+      "ci95": [
+        0.0455,
+        0.0655
+      ]
+    },
+    "calibrated_n_1460": {
+      "n": 1460,
+      "seeds": 2000,
+      "fwer": 0.043,
+      "ci95": [
+        0.0341,
+        0.0519
+      ]
+    }
+  },
+  "normal_outcome_power_check": {
+    "per_arm": 482,
+    "true_effect": 0.3,
+    "seeds": 2000,
+    "obf_power": 0.7905,
+    "ci95": [
+      0.7727,
+      0.8083
+    ],
+    "verdict": "textbook formula validated: power near 0.80 when its normality assumption holds"
+  },
+  "overall": "Investigation of the 6.2% null rate found TWO real issues, both fixed. (1) A bug in the OBF boundary recursion: the survival truncation was applied after propagation instead of before, making later bounds too liberal (family-wise error 0.060 under the canonical model). Fixed; the Brownian check now gives 0.0506 with CI [0.0496, 0.0516] and per-look increments matching the spending function. (2) A flawed validation design: the first bootstrap kept hash-fixed arms, freezing each seed's realized finite-population difference, which the test then rightly rejected more often at larger n/N. Replaced with a permutation null (exchangeable arms): about 0.05 at both sizes on real outcomes. The textbook formula is validated (power 0.80 at 482/arm on normal data). The replay power shortfall is fully explained by the 5-star ceiling, corrected by the calibrated size of about 750/arm."
+}

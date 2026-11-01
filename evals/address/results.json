@@ -1,0 +1,22 @@
+{
+  "dataset": "OpenStreetMap Austin extract (BBBike, ODbL), 80000 elements parsed",
+  "label_dist": {
+    "business": 19335,
+    "residential": 3903,
+    "unknown": 56762
+  },
+  "task": "business vs residential on confidently-labeled subset (n=23238)",
+  "models": {
+    "logreg_full_features": {
+      "roc_auc": 0.9981
+    },
+    "logreg_no_name_hours": {
+      "roc_auc": 0.9964
+    },
+    "logreg_geometry_only": {
+      "roc_auc": 0.9818
+    }
+  },
+  "caveat": "Near-perfect scores reflect OSM representation artifacts (businesses are usually tagged nodes, residences are building ways), not a solved ML problem. The real challenge is the 56762 unknown elements, which cannot be evaluated without ground truth. Reported honestly as a limitation.",
+  "leakage_control": "Label tags (shop/amenity/office/craft) excluded from features."
+}

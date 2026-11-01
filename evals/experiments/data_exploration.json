@@ -1,0 +1,24 @@
+{
+  "n_delivered_orders": 96478,
+  "n_unique_customers": 93358,
+  "late_rate": 0.08111693857667032,
+  "share_customers_with_gt1_order": 0.03000278497825575,
+  "orders_per_customer_p50": 1.0,
+  "orders_per_customer_p99": 2.0,
+  "n_reviews_total": 95832,
+  "n_reviews_late_orders": 7661,
+  "review_mean_all": 4.156544786710076,
+  "review_std_all": 1.2843703821484247,
+  "review_mean_late": 2.567680459470043,
+  "review_std_late": 1.6590663045343774,
+  "within_customer_score_corr_n_pairs": 2764,
+  "within_customer_score_corr": 0.45446212792355406,
+  "numeric_covariate_corr_with_review": {
+    "order_value": -0.034951053220472476,
+    "freight": -0.08935895267837085
+  },
+  "categorical_eta_squared_with_review": {
+    "product_category_name": 0.007988378272490616,
+    "customer_state": 0.0082130329561596
+  }
+}

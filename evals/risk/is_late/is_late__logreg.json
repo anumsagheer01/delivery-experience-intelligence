@@ -1,0 +1,41 @@
+{
+  "model": "is_late__logreg",
+  "n": 52188,
+  "positive_rate": 0.0936,
+  "roc_auc": 0.6226,
+  "pr_auc": 0.1363,
+  "precision": 0.0,
+  "recall": 0.0,
+  "f1": 0.0,
+  "brier": 0.0864,
+  "best_threshold": {
+    "threshold": 0.05,
+    "f1": 0.225,
+    "precision": 0.1488,
+    "recall": 0.4617
+  },
+  "confusion_matrix": [
+    [
+      47302,
+      0
+    ],
+    [
+      4886,
+      0
+    ]
+  ],
+  "calibration": {
+    "prob_true": [
+      0.09,
+      0.139,
+      0.167,
+      0.29
+    ],
+    "prob_pred": [
+      0.036,
+      0.131,
+      0.229,
+      0.343
+    ]
+  }
+}

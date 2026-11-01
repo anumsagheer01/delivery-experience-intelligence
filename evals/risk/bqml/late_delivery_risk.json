@@ -1,0 +1,20 @@
+{
+  "model": "delivery-experience-511901.dei_mart.late_delivery_risk",
+  "engine": "BigQuery ML BOOSTED_TREE_CLASSIFIER",
+  "hyperparameters": {"max_tree_depth": 6, "learn_rate": 0.1, "data_split_method": "NO_SPLIT"},
+  "train": "orders purchased < 2018-01-01, purchase-time features only, order grain",
+  "test": "orders purchased >= 2018-01-01 (temporal holdout)",
+  "training_job": "bqjob_r54acb08f1fe77ff0_000001a149841118_1",
+  "training_duration": "0:21:55",
+  "eval_job": "bqjob_r3011d6214cf8fb64_000001a1499be0da_1",
+  "metrics_holdout": {
+    "precision": 0.1111111111111111,
+    "recall": 0.0004095004095004095,
+    "accuracy": 0.9061452085768487,
+    "f1_score": 0.0008159934720522236,
+    "log_loss": 0.30744010927833454,
+    "roc_auc": 0.6155854145854146
+  },
+  "executed": "2026-10-17T11:25:33Z in Cloud Shell, project delivery-experience-511901",
+  "note": "ML.EVALUATE uses the default 0.5 decision threshold; with 9.4% base rate the model rarely predicts positive at 0.5, hence near-zero recall. ROC-AUC 0.616 is the threshold-free measure and is directly comparable to the local sklearn HGB ROC-AUC 0.649 on the same split."
+}

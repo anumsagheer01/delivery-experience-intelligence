@@ -1,0 +1,43 @@
+{
+  "model": "is_low_review__hgb",
+  "n": 52188,
+  "positive_rate": 0.1327,
+  "roc_auc": 0.6012,
+  "pr_auc": 0.2019,
+  "precision": 0.0,
+  "recall": 0.0,
+  "f1": 0.0,
+  "brier": 0.1131,
+  "best_threshold": {
+    "threshold": 0.1,
+    "f1": 0.2576,
+    "precision": 0.1657,
+    "recall": 0.5785
+  },
+  "confusion_matrix": [
+    [
+      45265,
+      0
+    ],
+    [
+      6923,
+      0
+    ]
+  ],
+  "calibration": {
+    "prob_true": [
+      0.104,
+      0.148,
+      0.303,
+      0.335,
+      0.75
+    ],
+    "prob_pred": [
+      0.084,
+      0.126,
+      0.231,
+      0.329,
+      0.42
+    ]
+  }
+}
